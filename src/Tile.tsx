@@ -1,11 +1,14 @@
 import React from 'react';
 import { TileT } from './types';
+import { GameState } from './Board';
 
 type TilePropsT = {
   tile: TileT
-  onClick: (x: number, y: number) => void
+  onClick: (x: number, y: number) => void,
+  onSecondaryClick: (x: number, y: number) => void
   x: number,
-  y: number
+  y: number,
+  gameState: GameState
 }
 
 const getFontColor = (tile: TileT) => {
@@ -23,6 +26,8 @@ const baseStyle = {
   display: 'inline-flex',
   minWidth: '20px',
   minHeight: '28px',
+  maxHeight: '28px',
+  lineHeight: '28px',
   flexDirecction: 'column',
   alignItems: 'center',
   justifyContent: 'center',
@@ -30,7 +35,7 @@ const baseStyle = {
   borderStyle: 'solid'
 };
 
-const Tile = ({ tile, onClick, x, y }: TilePropsT) => {
+const Tile = ({ tile, onClick, x, y, gameState }: TilePropsT) => {
   if (!tile.inspected) {
     return (
       <span
@@ -42,7 +47,7 @@ const Tile = ({ tile, onClick, x, y }: TilePropsT) => {
           cursor: 'pointer'
         }}
         onClick={() => onClick(x, y)}
-      >?</span>
+      >{gameState === GameState.Lost && tile.bomb ? '💣' : '?'}</span>
     );
   }
   return (
@@ -53,7 +58,7 @@ const Tile = ({ tile, onClick, x, y }: TilePropsT) => {
         borderColor: 'white',
       }}  
     >
-      {tile.bomb ? '💣' : tile.neighbors}
+      {tile.bomb ? '💥'  : tile.neighbors}
     </span>
   )
 };

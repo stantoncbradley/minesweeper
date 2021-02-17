@@ -3,29 +3,49 @@ import Tile from './Tile';
 import generateMap from './utils/generateMap';
 import inspectNeighbors from './utils/inspectNeighbors';
 
+export enum GameState {
+  New = "NEW",
+  InProgress = "IN_PROGRESS",
+  Won = "WON",
+  Lost = "LOST"
+}
+
 const Board = ({width = 40, height = 20, numMines = 100 }) => {
   const [mineMap, setMineMap] = useState(generateMap(width, height, numMines));
-  const [lost, setLost] = useState(false);
+  const [gameState, setGameState] = useState(GameState.New);
 
   const onClick = (x: number, y: number) => {
     const newMap = [...mineMap.map(row => [...row])];
     const tile = newMap[y][x];
+    tile.inspected = true;
     if (tile.bomb) {
-      setLost(true);
+      setGameState(GameState.Lost);
+      setMineMap(newMap);
       return;
     }
     if (tile.neighbors === 0) {
       inspectNeighbors(x, y, newMap);
     }
-    tile.inspected = true;
     setMineMap(newMap);
   }
+
+  const onSecondaryClick = () => {}
 
   return (
     <div>
       {mineMap.map((row, y) => (
         <div>
-          {row.map((tile, x) => <Tile tile={tile} key={`${x}${y}`} onClick={onClick} x={x} y={y} />)}
+          {row.map((tile, x) => (
+            <Tile
+              tile={tile}
+              key={`${x}${y}`}
+              onClick={onClick}
+              onSecondaryClick={onSecondaryClick}
+              gameState={gameState}
+              x={x}
+              y={y}
+            />
+          ))}
         </div>
       ))}
     </div>

@@ -1,6 +1,8 @@
 import { TileT } from '../types';
 
-const applyToNeighbors = (func: (x: number, y: number, board: TileT[][]) => void): (x: number, y: number, board: TileT[][]) => void => {
+type funcT = (x: number, y: number, board: TileT[][]) => void
+
+const applyToNeighbors = (func: funcT): funcT => {
   return (x: number, y: number, board: TileT[][]): void => {
     const boardWidth = board[0].length - 1;
     const boardLength = board.length - 1;
